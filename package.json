@@ -16,21 +16,22 @@
     ""
   ],
   "devDependencies": {
+    "babel-core": "^6.7.4",
+    "babel-transform-in-browser": "^6.4.6",
+    "del": "^2.0.2",
+    "es6-shim": "^0.35.0",
     "eslint": "^2.1.0",
     "eslint-config-xo-space": "^0.10.0",
-    "babel-eslint": "^4.1.8",
     "eslint-plugin-babel": "^3.1.0",
     "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
     "gulp-eslint": "^2.0.0",
     "gulp-exclude-gitignore": "^1.0.0",
-    "gulp-line-ending-corrector": "^1.0.1",
     "gulp-istanbul": "^0.10.3",
+    "gulp-line-ending-corrector": "^1.0.1",
     "gulp-mocha": "^2.0.0",
-    "gulp-plumber": "^1.0.0",
     "gulp-nsp": "^2.1.0",
-    "gulp-babel": "^5.1.0",
-    "del": "^2.0.2",
-    "babel-core": "^5.5.0",
+    "gulp-plumber": "^1.0.0",
     "isparta": "^3.0.3"
   },
   "eslintConfig": {
@@ -44,5 +45,11 @@
     "prepublish": "gulp prepublish",
     "test": "gulp"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "draft-js": "^0.3.0",
+    "immutable": "^3.7.6",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7"
+  }
 }
