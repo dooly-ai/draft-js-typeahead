@@ -17,6 +17,20 @@
     'use strict';
     const { Editor, EditorState } = Draft;
 
+    const MentionsTypeahead = ({ left, top, text }) => {
+      const style = Object.assign({}, styles.typeahead, {
+        position: 'absolute',
+        left,
+        top
+      });
+
+      return (
+        <div style={style}>
+          A wild overlay appears!
+        </div>
+      );
+    };
+
     class MentionsEditorExample extends React.Component {
       constructor() {
         super();
@@ -25,14 +39,93 @@
         };
       }
 
-      onChange = (editorState) => {
-        this.setState({ editorState });
+      hasEntityAtSelection = () => {
+        const { editorState } = this.state;
+
+        const selection = editorState.getSelection();
+        if (!selection.getHasFocus()) {
+          return false;
+        }
+
+        const contentState = editorState.getCurrentContent();
+        const block = contentState.getBlockForKey(selection.getStartKey());
+        return !!block.getEntityAt(selection.getStartOffset() - 1);
       };
 
-      render() {
+      getTypeaheadRange = () => {
+        const selection = window.getSelection();
+        if (selection.rangeCount === 0) {
+          return null;
+        }
+
+        if (this.hasEntityAtSelection()) {
+          return null;
+        }
+
+        const range = selection.getRangeAt(0);
+        let text = range.startContainer.textContent;
+
+        // Remove text that appears after the cursor..
+        text = text.substring(0, range.startOffset);
+
+        // ..and before the typeahead token.
+        const index = text.lastIndexOf('@');
+        if (index === -1) {
+          return null;
+        }
+        text = text.substring(index);
+
+        return {
+          text,
+          start: index,
+          end: range.startOffset
+        };
+      };
+
+      getTypeaheadState = () => {
+        const typeaheadRange = this.getTypeaheadRange();
+        if (!typeaheadRange) {
+          return null;
+        }
+
+        const tempRange = window.getSelection().getRangeAt(0).cloneRange();
+        tempRange.setStart(tempRange.startContainer, typeaheadRange.start);
+
+        const rangeRect = tempRange.getBoundingClientRect();
+        let [left, top] = [rangeRect.left, rangeRect.bottom];
+
+        return {
+          left,
+          top,
+          text: typeaheadRange.text
+        };
+      };
+
+      onChange = (editorState) => {
+        this.setState({ editorState });
+
+        // Set typeahead visibility. Wait a frame to ensure that the cursor is
+        // updated.
+        window.requestAnimationFrame(() => {
+          this.setState({
+            typeahead: this.getTypeaheadState()
+          })
+        });
+      };
+
+      renderTypeahead = () => {
+        const { typeahead } = this.state;
+        if (!typeahead) {
+          return null;
+        }
+        return <MentionsTypeahead {...typeahead} />;
+      }
+
+      render = () => {
         const { state } = this;
         return (
           <div style={styles.root}>
+            {this.renderTypeahead()}
             <div style={styles.editor}>
               <Editor
                 editorState={state.editorState}
@@ -46,14 +139,20 @@
 
     const styles = {
       root: {
-        fontFamily: 'Helvetica, sans-serif',
+        width: 600,
         padding: 20,
-        width: 600
+        fontFamily: 'Helvetica, sans-serif'
       },
       editor: {
-        border: '1px solid #ccc',
         minHeight: 80,
-        padding: 10
+        padding: 10,
+        border: '1px solid #ccc'
+      },
+      typeahead: {
+        padding: 10,
+        background: 'ivory',
+        border: '1px solid #ccc',
+        borderRadius: 3
       }
     };
 
