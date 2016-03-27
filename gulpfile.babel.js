@@ -7,6 +7,10 @@ import del from 'del';
 const buildDist = (opts) => {
   const webpackOpts = {
     debug: opts.debug,
+    externals: {
+      React: 'React',
+      'draft-js': 'Draft'
+    },
     output: {
       filename: opts.output,
       libraryTarget: 'var',
