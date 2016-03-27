@@ -11,40 +11,22 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "keywords": [
     ""
   ],
   "devDependencies": {
     "babel-core": "^6.7.4",
+    "babel-preset-es2015": "^6.6.0",
     "babel-transform-in-browser": "^6.4.6",
-    "del": "^2.0.2",
+    "del": "^2.2.0",
     "es6-shim": "^0.35.0",
-    "eslint": "^2.1.0",
-    "eslint-config-xo-space": "^0.10.0",
-    "eslint-plugin-babel": "^3.1.0",
-    "gulp": "^3.9.0",
-    "gulp-babel": "^5.1.0",
-    "gulp-eslint": "^2.0.0",
-    "gulp-exclude-gitignore": "^1.0.0",
-    "gulp-istanbul": "^0.10.3",
-    "gulp-line-ending-corrector": "^1.0.1",
-    "gulp-mocha": "^2.0.0",
-    "gulp-nsp": "^2.1.0",
-    "gulp-plumber": "^1.0.0",
-    "isparta": "^3.0.3"
-  },
-  "eslintConfig": {
-    "extends": "xo-space/esnext",
-    "env": {
-      "mocha": true
-    }
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "run-sequence": "^1.1.5",
+    "webpack-stream": "^3.1.0"
   },
   "repository": "dooly-ai/draft-js-typeahead",
-  "scripts": {
-    "prepublish": "gulp prepublish",
-    "test": "gulp"
-  },
   "license": "MIT",
   "dependencies": {
     "draft-js": "^0.3.0",
