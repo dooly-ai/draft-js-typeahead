@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Draft Typeahead • Mentions</title>
+  <title>Draft Typeahead • Overlay</title>
 </head>
 <body>
   <div id="target"></div>
@@ -18,7 +18,7 @@
     const { Editor, EditorState } = Draft;
     const { TypeaheadEditor } = DraftTypeahead;
 
-    const MentionsTypeahead = ({ left, top, text }) => {
+    const Overlay = ({ left, top, text }) => {
       const style = Object.assign({}, styles.typeahead, {
         position: 'absolute',
         left,
@@ -31,7 +31,7 @@
       );
     };
 
-    class MentionsEditorExample extends React.Component {
+    class OverlayEditorExample extends React.Component {
       constructor() {
         super();
         this.state = {
@@ -53,8 +53,8 @@
         if (!typeaheadState) {
           return null;
         }
-        return <MentionsTypeahead {...typeaheadState} />;
-      }
+        return <Overlay {...typeaheadState} />;
+      };
 
       render = () => (
         <div style={styles.root}>
@@ -90,7 +90,7 @@
     };
 
     ReactDOM.render(
-      <MentionsEditorExample />,
+      <OverlayEditorExample />,
       document.getElementById('target')
     );
   </script>
