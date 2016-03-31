@@ -2,6 +2,11 @@ import React from 'React';
 import { Editor, EditorState } from 'draft-js';
 
 export class TypeaheadEditor extends Editor {
+  constructor(props) {
+    super(props);
+    this.typeaheadState = null;
+  }
+
   hasEntityAtSelection = () => {
     const { editorState } = this.props;
 
@@ -45,9 +50,14 @@ export class TypeaheadEditor extends Editor {
     };
   };
 
-  getTypeaheadState = () => {
+  getTypeaheadState = (invalidate = true) => {
+    if (!invalidate) {
+      return this.typeaheadState;
+    }
+
     const typeaheadRange = this.getTypeaheadRange();
     if (!typeaheadRange) {
+      this.typeaheadState = null;
       return null;
     }
 
@@ -57,11 +67,13 @@ export class TypeaheadEditor extends Editor {
     const rangeRect = tempRange.getBoundingClientRect();
     let [left, top] = [rangeRect.left, rangeRect.bottom];
 
-    return {
+    this.typeaheadState = {
       left,
       top,
-      text: typeaheadRange.text
+      text: typeaheadRange.text,
+      selectedIndex: 0
     };
+    return this.typeaheadState;
   };
 
   onChange = (editorState) => {
@@ -80,7 +92,7 @@ export class TypeaheadEditor extends Editor {
   onEscape = (e) => {
     const { onEscape, onTypeaheadChange } = this.props;
 
-    if (!this.getTypeaheadRange()) {
+    if (!this.getTypeaheadState(false)) {
       if (onEscape) {
         onEscape(e);
       }
@@ -88,18 +100,56 @@ export class TypeaheadEditor extends Editor {
     }
 
     e.preventDefault();
+    this.typeaheadState = null;
+
     if (onTypeaheadChange) {
       onTypeaheadChange(null);
     }
   };
 
+  onArrow = (e, originalHandler, nudgeAmount) => {
+    const { onTypeaheadChange } = this.props;
+    let typeaheadState = this.getTypeaheadState(false);
+
+    if (!typeaheadState) {
+      if (originalHandler) {
+        originalHandler(e);
+      }
+      return;
+    }
+
+    e.preventDefault();
+    typeaheadState.selectedIndex += nudgeAmount;
+    this.typeaheadState = typeaheadState;
+
+    if (onTypeaheadChange) {
+      onTypeaheadChange(typeaheadState);
+    }
+  };
+
+  onUpArrow = (e) => {
+    this.onArrow(e, this.props.onUpArrow, -1);
+  };
+
+  onDownArrow = (e) => {
+    this.onArrow(e, this.props.onDownArrow, 1);
+  };
+
   render() {
-    const { onChange, onEscape, onTypeaheadChange, ...other } = this.props;
+    const {
+      onChange,
+      onEscape, onUpArrow, onDownArrow,
+      onTypeaheadChange,
+      ...other
+    } = this.props;
+
     return (
       <Editor
         {...other}
         onChange={this.onChange}
         onEscape={this.onEscape}
+        onUpArrow={this.onUpArrow}
+        onDownArrow={this.onDownArrow}
       />
     );
   }
