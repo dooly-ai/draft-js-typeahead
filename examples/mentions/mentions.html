@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Draft Typeahead • Mentions</title>
+</head>
+<body>
+  <div id="target"></div>
+  <script src="../../node_modules/es6-shim/es6-shim.js"></script>
+  <script src="../../node_modules/babel-transform-in-browser/dist/btib.js"></script>
+  <script src="../../node_modules/immutable/dist/immutable.js"></script>
+  <script src="../../node_modules/react/dist/react.js"></script>
+  <script src="../../node_modules/react-dom/dist/react-dom.js"></script>
+  <script src="../../node_modules/draft-js/dist/Draft.js"></script>
+  <script src="../../dist/draft-typeahead.js"></script>
+  <script type="text/es2015">
+    'use strict';
+    const { Editor, EditorState } = Draft;
+    const { TypeaheadEditor } = DraftTypeahead;
+
+    const people = [
+      {
+        name: 'Justin Vaillancourt',
+        img: ''
+      },
+      {
+        name: 'Ellie Pritts',
+        img: ''
+      },
+      {
+        name: 'Maxime Santerre',
+        img: ''
+      },
+      {
+        name: 'Melody Ma',
+        img: ''
+      },
+      {
+        name: 'Kris Hartvigsen',
+        img: ''
+      }
+    ];
+
+    const Overlay = ({ left, top, text }) => {
+      const style = Object.assign({}, styles.typeahead, {
+        position: 'absolute',
+        left,
+        top
+      });
+      return (
+        <ul style={style}>
+          {people.map(person =>
+            <li style={styles.person}>{person.name}</li>
+          )}
+        </ul>
+      );
+    };
+
+    class OverlayEditorExample extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          editorState: EditorState.createEmpty(),
+          typeaheadState: null
+        };
+      }
+
+      onChange = (editorState) => {
+        this.setState({ editorState });
+      };
+
+      onTypeaheadChange = (typeaheadState) => {
+        this.setState({ typeaheadState });
+      };
+
+      renderTypeahead = () => {
+        const { typeaheadState } = this.state;
+        if (!typeaheadState) {
+          return null;
+        }
+        return <Overlay {...typeaheadState} />;
+      };
+
+      render = () => (
+        <div style={styles.root}>
+          {this.renderTypeahead()}
+          <div style={styles.editor}>
+            <TypeaheadEditor
+              editorState={this.state.editorState}
+              onChange={this.onChange}
+              onTypeaheadChange={this.onTypeaheadChange}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    const styles = {
+      root: {
+        width: 600,
+        padding: 20,
+        fontFamily: 'Helvetica, sans-serif'
+      },
+      editor: {
+        minHeight: 80,
+        padding: 10,
+        border: '1px solid #ccc'
+      },
+      typeahead: {
+        margin: 0,
+        padding: 0,
+        border: '1px solid #ccc',
+        background: 'white',
+        boxShadow: '0 0 0 1px rgba(0, 0, 0, .1), 0 1px 10px rgba(0, 0, 0, .35)',
+        borderRadius: 3,
+        listStyleType: 'none'
+      },
+      person: {
+        margin: 0,
+        padding: '16px 24px'
+      },
+      selected: {
+        background: 'DarkOrchid',
+        color: 'white'
+      }
+    };
+
+    ReactDOM.render(
+      <OverlayEditorExample />,
+      document.getElementById('target')
+    );
+  </script>
+</body>
+</html>
