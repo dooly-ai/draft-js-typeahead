@@ -77,8 +77,30 @@ export class TypeaheadEditor extends Editor {
     }
   };
 
+  onEscape = (e) => {
+    const { onEscape, onTypeaheadChange } = this.props;
+
+    if (!this.getTypeaheadRange()) {
+      if (onEscape) {
+        onEscape(e);
+      }
+      return;
+    }
+
+    e.preventDefault();
+    if (onTypeaheadChange) {
+      onTypeaheadChange(null);
+    }
+  };
+
   render() {
-    const { onChange, onTypeaheadChange, ...other } = this.props;
-    return <Editor {...other} onChange={this.onChange} />;
+    const { onChange, onEscape, onTypeaheadChange, ...other } = this.props;
+    return (
+      <Editor
+        {...other}
+        onChange={this.onChange}
+        onEscape={this.onEscape}
+      />
+    );
   }
 };
