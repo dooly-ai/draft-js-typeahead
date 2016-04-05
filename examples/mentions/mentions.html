@@ -16,7 +16,7 @@
   <script type="text/es2015">
     'use strict';
     const { Editor, EditorState } = Draft;
-    const { TypeaheadEditor } = DraftTypeahead;
+    const { TypeaheadEditor, normalizeSelectedIndex } = DraftTypeahead;
 
     const people = [
       {
@@ -41,22 +41,30 @@
       }
     ];
 
-    const Overlay = ({ left, top, text }) => {
-      const style = Object.assign({}, styles.typeahead, {
+    const Mentions = ({ left, top, selectedIndex, text }) => {
+      const typeaheadStyle = Object.assign({}, styles.typeahead, {
         position: 'absolute',
         left,
         top
       });
+      const normalizedIndex = normalizeSelectedIndex(selectedIndex, people.length);
       return (
-        <ul style={style}>
-          {people.map(person =>
-            <li style={styles.person}>{person.name}</li>
-          )}
+        <ul style={typeaheadStyle}>
+          {people.map((person, index) => {
+            const style =
+              index === normalizedIndex ?
+              styles.selectedPerson : styles.person;
+            return (
+              <li style={style}>
+                {person.name}
+              </li>
+            );
+          })}
         </ul>
       );
     };
 
-    class OverlayEditorExample extends React.Component {
+    class MentionsEditorExample extends React.Component {
       constructor() {
         super();
         this.state = {
@@ -78,7 +86,7 @@
         if (!typeaheadState) {
           return null;
         }
-        return <Overlay {...typeaheadState} />;
+        return <Mentions {...typeaheadState} />;
       };
 
       render = () => (
@@ -119,14 +127,16 @@
         margin: 0,
         padding: '16px 24px'
       },
-      selected: {
+      selectedPerson: {
+        margin: 0,
+        padding: '16px 24px',
         background: 'DarkOrchid',
         color: 'white'
       }
     };
 
     ReactDOM.render(
-      <OverlayEditorExample />,
+      <MentionsEditorExample />,
       document.getElementById('target')
     );
   </script>

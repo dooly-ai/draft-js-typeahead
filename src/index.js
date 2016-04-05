@@ -1,6 +1,14 @@
 import React from 'React';
 import { Editor, EditorState } from 'draft-js';
 
+export const normalizeSelectedIndex = (selectedIndex, max) => {
+  let index = selectedIndex % max;
+  if (index < 0) {
+    index += max;
+  }
+  return index;
+};
+
 export class TypeaheadEditor extends Editor {
   constructor(props) {
     super(props);
