@@ -19,26 +19,11 @@
     const { TypeaheadEditor, normalizeSelectedIndex } = DraftTypeahead;
 
     const people = [
-      {
-        name: 'Justin Vaillancourt',
-        img: ''
-      },
-      {
-        name: 'Ellie Pritts',
-        img: ''
-      },
-      {
-        name: 'Maxime Santerre',
-        img: ''
-      },
-      {
-        name: 'Melody Ma',
-        img: ''
-      },
-      {
-        name: 'Kris Hartvigsen',
-        img: ''
-      }
+      'Justin Vaillancourt',
+      'Ellie Pritts',
+      'Maxime Santerre',
+      'Melody Ma',
+      'Kris Hartvigsen'
     ];
 
     const Mentions = ({ left, top, selectedIndex, text }) => {
@@ -47,16 +32,27 @@
         left,
         top
       });
-      const normalizedIndex = normalizeSelectedIndex(selectedIndex, people.length);
+
+      const relevantPeople = people.filter(person => {
+        const query = text.toLowerCase().replace(/^@/, '');
+        return person.toLowerCase().startsWith(query);
+      });
+      if (!relevantPeople) {
+        return null;
+      }
+
+      const normalizedIndex = normalizeSelectedIndex(
+        selectedIndex, relevantPeople.length
+      );
       return (
         <ul style={typeaheadStyle}>
-          {people.map((person, index) => {
+          {relevantPeople.map((person, index) => {
             const style =
               index === normalizedIndex ?
               styles.selectedPerson : styles.person;
             return (
               <li style={style}>
-                {person.name}
+                {person}
               </li>
             );
           })}
