@@ -15,7 +15,7 @@ $ npm install --save draft-js-typeahead
 
 An example is worth a million words. Please check out the examples under the [/examples](examples) directory.
 
-## Usage with ES6
+## Usage
 
 `draft-js-typeahead` helps in three ways:
  - It figures out if and where the typeahead should be showing.
