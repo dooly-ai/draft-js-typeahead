@@ -1,21 +1,21 @@
 import React from 'React';
 import { Editor, EditorState } from 'draft-js';
 
-export const normalizeSelectedIndex = (selectedIndex, max) => {
+function normalizeSelectedIndex(selectedIndex, max) {
   let index = selectedIndex % max;
   if (index < 0) {
     index += max;
   }
   return index;
-};
+}
 
-export class TypeaheadEditor extends Editor {
+class TypeaheadEditor extends Editor {
   constructor(props) {
     super(props);
     this.typeaheadState = null;
   }
 
-  hasEntityAtSelection = () => {
+  hasEntityAtSelection() {
     const { editorState } = this.props;
 
     const selection = editorState.getSelection();
@@ -26,9 +26,9 @@ export class TypeaheadEditor extends Editor {
     const contentState = editorState.getCurrentContent();
     const block = contentState.getBlockForKey(selection.getStartKey());
     return !!block.getEntityAt(selection.getStartOffset() - 1);
-  };
+  }
 
-  getTypeaheadRange = () => {
+  getTypeaheadRange() {
     const selection = window.getSelection();
     if (selection.rangeCount === 0) {
       return null;
@@ -56,9 +56,9 @@ export class TypeaheadEditor extends Editor {
       start: index,
       end: range.startOffset
     };
-  };
+  }
 
-  getTypeaheadState = (invalidate = true) => {
+  getTypeaheadState(invalidate = true) {
     if (!invalidate) {
       return this.typeaheadState;
     }
@@ -82,47 +82,37 @@ export class TypeaheadEditor extends Editor {
       selectedIndex: 0
     };
     return this.typeaheadState;
-  };
+  }
 
   onChange = (editorState) => {
-    const { onChange, onTypeaheadChange } = this.props;
-    onChange(editorState);
+    this.props.onChange(editorState);
 
     // Set typeahead visibility. Wait a frame to ensure that the cursor is
     // updated.
-    if (onTypeaheadChange) {
+    if (this.props.onTypeaheadChange) {
       window.requestAnimationFrame(() => {
-        onTypeaheadChange(this.getTypeaheadState());
+        this.props.onTypeaheadChange(this.getTypeaheadState());
       });
     }
   };
 
   onEscape = (e) => {
-    const { onEscape, onTypeaheadChange } = this.props;
-
     if (!this.getTypeaheadState(false)) {
-      if (onEscape) {
-        onEscape(e);
-      }
+      this.props.onEscape && this.props.onEscape(e);
       return;
     }
 
     e.preventDefault();
     this.typeaheadState = null;
 
-    if (onTypeaheadChange) {
-      onTypeaheadChange(null);
-    }
+    this.props.onTypeaheadChange && this.props.onTypeaheadChange(null);
   };
 
-  onArrow = (e, originalHandler, nudgeAmount) => {
-    const { onTypeaheadChange } = this.props;
+  onArrow(e, originalHandler, nudgeAmount) {
     let typeaheadState = this.getTypeaheadState(false);
 
     if (!typeaheadState) {
-      if (originalHandler) {
-        originalHandler(e);
-      }
+      originalHandler && originalHandler(e);
       return;
     }
 
@@ -130,10 +120,8 @@ export class TypeaheadEditor extends Editor {
     typeaheadState.selectedIndex += nudgeAmount;
     this.typeaheadState = typeaheadState;
 
-    if (onTypeaheadChange) {
-      onTypeaheadChange(typeaheadState);
-    }
-  };
+    this.props.onTypeaheadChange && this.props.onTypeaheadChange(typeaheadState);
+  }
 
   onUpArrow = (e) => {
     this.onArrow(e, this.props.onUpArrow, -1);
@@ -141,6 +129,33 @@ export class TypeaheadEditor extends Editor {
 
   onDownArrow = (e) => {
     this.onArrow(e, this.props.onDownArrow, 1);
+  }
+
+  handleReturn = (e) => {
+    if (this.typeaheadState) {
+      if (this.props.handleTypeaheadReturn) {
+        const contentState = this.props.editorState.getCurrentContent();
+
+        const selection = contentState.getSelectionAfter();
+        const entitySelection = selection.set(
+          'anchorOffset', selection.getFocusOffset() - this.typeaheadState.text.length
+        );
+
+        this.props.handleTypeaheadReturn(
+          this.typeaheadState.text, this.typeaheadState.selectedIndex, entitySelection
+        );
+
+        this.typeaheadState = null;
+        this.props.onTypeaheadChange && this.props.onTypeaheadChange(null);
+      } else {
+        console.error(
+          "Warning: A typeahead is showing and return was pressed but `handleTypeaheadReturn` " +
+          "isn't implemented."
+        );
+      }
+      return true;
+    }
+    return false;
   };
 
   render() {
@@ -158,7 +173,13 @@ export class TypeaheadEditor extends Editor {
         onEscape={this.onEscape}
         onUpArrow={this.onUpArrow}
         onDownArrow={this.onDownArrow}
+        handleReturn={this.handleReturn}
       />
     );
   }
+};
+
+export {
+  normalizeSelectedIndex,
+  TypeaheadEditor,
 };

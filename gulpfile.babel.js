@@ -55,7 +55,7 @@ gulp.task('modules', () => {
     .pipe(gulp.dest('lib'));
 });
 
-gulp.task('dist', () => {
+gulp.task('dist', ['modules'], () => {
   const opts = {
     debug: true,
     output: 'draft-typeahead.js'
@@ -65,7 +65,7 @@ gulp.task('dist', () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('dist:min', () => {
+gulp.task('dist:min', ['modules'], () => {
   const opts = {
     debug: false,
     output: 'draft-typeahead.min.js'
@@ -73,10 +73,6 @@ gulp.task('dist:min', () => {
   return gulp.src('lib/index.js')
     .pipe(buildDist(opts))
     .pipe(gulp.dest('dist'));
-});
-
-gulp.task('watch', () => {
-  gulp.watch('src/**/*.js', ['modules']);
 });
 
 gulp.task('default', (cb) => {

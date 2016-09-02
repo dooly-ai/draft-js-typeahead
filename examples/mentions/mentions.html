@@ -15,10 +15,10 @@
   <script src="../../dist/draft-typeahead.js"></script>
   <script type="text/es2015">
     'use strict';
-    const { Editor, EditorState } = Draft;
+    const { Editor, EditorState, Entity, Modifier, CompositeDecorator } = Draft;
     const { TypeaheadEditor, normalizeSelectedIndex } = DraftTypeahead;
 
-    const people = [
+    const PEOPLE = [
       'Justin Vaillancourt',
       'Ellie Pritts',
       'Maxime Santerre',
@@ -26,32 +26,59 @@
       'Kris Hartvigsen'
     ];
 
-    const Mentions = ({ left, top, selectedIndex, text }) => {
+    const MENTION_ENTITY_KEY = Entity.create('MENTION', 'SEGMENTED');
+
+    function filterPeople(query) {
+      return PEOPLE.filter(person => {
+        return person.toLowerCase().startsWith(query.toLowerCase());
+      });
+    }
+
+    function MentionSpan(props) {
+      return (
+        <span {...props} style={styles.mention}>
+          {props.children}
+        </span>
+      );
+    };
+
+    function getEntityStrategy(mutability) {
+      return function(contentBlock, callback) {
+        contentBlock.findEntityRanges(
+          (character) => {
+            const entityKey = character.getEntity();
+            if (entityKey === null) {
+              return false;
+            }
+            return Entity.get(entityKey).getMutability() === mutability;
+          },
+          callback
+        );
+      };
+    }
+
+    const decorator = new CompositeDecorator([
+      {
+        strategy: getEntityStrategy('SEGMENTED'),
+        component: MentionSpan,
+      },
+    ]);
+
+    function Mentions({ left, top, selectedIndex, text }) {
       const typeaheadStyle = Object.assign({}, styles.typeahead, {
         position: 'absolute',
         left,
         top
       });
 
-      const relevantPeople = people.filter(person => {
-        const query = text.toLowerCase().replace(/^@/, '');
-        return person.toLowerCase().startsWith(query);
-      });
-      if (!relevantPeople) {
-        return null;
-      }
+      const filteredPeople = filterPeople(text.replace(/^@/, ''));
+      const normalizedIndex = normalizeSelectedIndex(selectedIndex, filteredPeople.length);
 
-      const normalizedIndex = normalizeSelectedIndex(
-        selectedIndex, relevantPeople.length
-      );
       return (
         <ul style={typeaheadStyle}>
-          {relevantPeople.map((person, index) => {
-            const style =
-              index === normalizedIndex ?
-              styles.selectedPerson : styles.person;
+          {filteredPeople.map((person, index) => {
             return (
-              <li style={style}>
+              <li style={index === normalizedIndex ? styles.selectedPerson : styles.person}>
                 {person}
               </li>
             );
@@ -64,51 +91,70 @@
       constructor() {
         super();
         this.state = {
-          editorState: EditorState.createEmpty(),
+          editorState: EditorState.createEmpty(decorator),
           typeaheadState: null
         };
       }
 
-      onChange = (editorState) => {
-        this.setState({ editorState });
+      onChange = (editorState) => this.setState({ editorState });
+      onTypeaheadChange = (typeaheadState) => this.setState({ typeaheadState });
+
+      handleTypeaheadReturn = (text, selectedIndex, selection) => {
+        const { editorState } = this.state;
+
+        const filteredPeople = filterPeople(text.replace(/^@/, ''));
+        const index = normalizeSelectedIndex(selectedIndex, filteredPeople.length);
+
+        const contentStateWithEntity = Modifier.replaceText(
+          editorState.getCurrentContent(),
+          selection,
+          filteredPeople[index],
+          null,
+          MENTION_ENTITY_KEY
+        );
+
+        const nextEditorState = EditorState.push(
+          editorState, contentStateWithEntity, 'apply-entity'
+        );
+
+        this.setState({ editorState: nextEditorState });
       };
 
-      onTypeaheadChange = (typeaheadState) => {
-        this.setState({ typeaheadState });
-      };
-
-      renderTypeahead = () => {
+      renderTypeahead() {
         const { typeaheadState } = this.state;
-        if (!typeaheadState) {
+        if (typeaheadState === null) {
           return null;
         }
         return <Mentions {...typeaheadState} />;
-      };
+      }
 
-      render = () => (
-        <div style={styles.root}>
-          {this.renderTypeahead()}
-          <div style={styles.editor}>
-            <TypeaheadEditor
-              editorState={this.state.editorState}
-              onChange={this.onChange}
-              onTypeaheadChange={this.onTypeaheadChange}
-            />
+      render() {
+        return (
+          <div style={styles.root}>
+            {this.renderTypeahead()}
+            <div style={styles.editor}>
+              <TypeaheadEditor
+                editorState={this.state.editorState}
+                onChange={this.onChange}
+                onTypeaheadChange={this.onTypeaheadChange}
+                handleTypeaheadReturn={this.handleTypeaheadReturn}
+              />
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
 
     const styles = {
       root: {
         width: 600,
         padding: 20,
-        fontFamily: 'Helvetica, sans-serif'
+        fontFamily: 'Helvetica, sans-serif',
       },
       editor: {
         minHeight: 80,
         padding: 10,
-        border: '1px solid #ccc'
+        border: '1px solid #ccc',
       },
       typeahead: {
         margin: 0,
@@ -117,18 +163,22 @@
         background: 'white',
         boxShadow: '0 0 0 1px rgba(0, 0, 0, .1), 0 1px 10px rgba(0, 0, 0, .35)',
         borderRadius: 3,
-        listStyleType: 'none'
+        listStyleType: 'none',
       },
       person: {
         margin: 0,
-        padding: '16px 24px'
+        padding: '16px 24px',
       },
       selectedPerson: {
         margin: 0,
         padding: '16px 24px',
         background: 'DarkOrchid',
-        color: 'white'
-      }
+        color: 'white',
+      },
+      mention: {
+        background: 'DarkOrchid',
+        color: 'white',
+      },
     };
 
     ReactDOM.render(
