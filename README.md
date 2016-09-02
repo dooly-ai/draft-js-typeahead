@@ -30,15 +30,15 @@ import { TypeaheadEditor } from 'draft-js-typeahead';
 
 `TypeaheadEditor` is a react component that wraps draft's `Editor` and subsequently supports all of the same properties as the latter, as well as a few others.
 
-`onTypeaheadChange => (typeaheadState)`:
+##### `onTypeaheadChange => (typeaheadState)`:
 
 This method is called when the typeahead's visibility, position, or text changes. `typeaheadState` is an object with `left`, `top`, `text`, and `selectedIndex` properties - everything you need to know to render your typeahead. Typically you'd store the typeahead's state on your own component and use that in your component's `render()` method to position and display an overlay.
 
-`handleTypeaheadReturn => (text, selectedIndex, selection)`:
+##### `handleTypeaheadReturn => (text, selectedIndex, selection)`:
 
 This method is called when the typeahead's value is locked in by the user hitting return. This is where you'd autocomplete the selection and tag it with an entity, if wanted.
 
-*Note that by default `draft-js-typeahead` does not help with filtering items in the typeahead based on the entered text, for a sample of how to do that please take a look at the mentions example.*
+*Note that by default `draft-js-typeahead` does not help with filtering items in the typeahead based on the entered text, for an example on how to do that please take a look at the mentions example.*
 
 ## License
 
