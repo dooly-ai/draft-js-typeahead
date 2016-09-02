@@ -38,7 +38,7 @@ This method is called when the typeahead's visibility, position, or text changes
 
 This method is called when the typeahead's value is locked in by the user hitting return. This is where you'd autocomplete the selection and tag it with an entity, if wanted.
 
-*Note that by default `draft-js-typeahead` does not help with filtering items in the typeahead based on the entered text, for a sample of how to do that please take a look at the mentions example.*
+*Note that by default `draft-js-typeahead` does not help with filtering items in the typeahead based on the entered text, for an example on how to do that please take a look at the mentions example.*
 
 ## License
 
