@@ -4,8 +4,11 @@
   <meta charset="utf-8" />
   <title>Draft Typeahead • Mentions</title>
 </head>
-<body>
-  <div id="target"></div>
+<body style="font-family: Helvetica, sans-serif">
+  <div style="width: 600px; padding: 20px">
+    <p>This is an example of mentions in Draft.js! Try entering an '@'.</p>
+    <div id="target"></div>
+  </div>
   <script src="../../node_modules/es6-shim/es6-shim.js"></script>
   <script src="../../node_modules/babel-transform-in-browser/dist/btib.js"></script>
   <script src="../../node_modules/immutable/dist/immutable.js"></script>
@@ -121,16 +124,15 @@
       };
 
       renderTypeahead() {
-        const { typeaheadState } = this.state;
-        if (typeaheadState === null) {
+        if (this.state.typeaheadState === null) {
           return null;
         }
-        return <Mentions {...typeaheadState} />;
+        return <Mentions {...this.state.typeaheadState} />;
       }
 
       render() {
         return (
-          <div style={styles.root}>
+          <div>
             {this.renderTypeahead()}
             <div style={styles.editor}>
               <TypeaheadEditor
@@ -146,11 +148,6 @@
     }
 
     const styles = {
-      root: {
-        width: 600,
-        padding: 20,
-        fontFamily: 'Helvetica, sans-serif',
-      },
       editor: {
         minHeight: 80,
         padding: 10,

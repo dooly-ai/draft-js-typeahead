@@ -4,8 +4,11 @@
   <meta charset="utf-8" />
   <title>Draft Typeahead • Overlay</title>
 </head>
-<body>
-  <div id="target"></div>
+<body style="font-family: Helvetica, sans-serif">
+  <div style="width: 600px; padding: 20px">
+    <p>This is an example of overlays in Draft.js! Try entering an '@'.</p>
+    <div id="target"></div>
+  </div>
   <script src="../../node_modules/es6-shim/es6-shim.js"></script>
   <script src="../../node_modules/babel-transform-in-browser/dist/btib.js"></script>
   <script src="../../node_modules/immutable/dist/immutable.js"></script>
@@ -18,7 +21,7 @@
     const { Editor, EditorState } = Draft;
     const { TypeaheadEditor } = DraftTypeahead;
 
-    const Overlay = ({ left, top, text }) => {
+    function Overlay({ left, top, text }) {
       const style = Object.assign({}, styles.typeahead, {
         position: 'absolute',
         left,
@@ -29,14 +32,14 @@
           A wild overlay appears!
         </div>
       );
-    };
+    }
 
     class OverlayEditorExample extends React.Component {
       constructor() {
         super();
         this.state = {
           editorState: EditorState.createEmpty(),
-          typeaheadState: null
+          typeaheadState: null,
         };
       }
 
@@ -48,45 +51,41 @@
         this.setState({ typeaheadState });
       };
 
-      renderTypeahead = () => {
-        const { typeaheadState } = this.state;
-        if (!typeaheadState) {
+      renderTypeahead() {
+        if (this.state.typeaheadState === null) {
           return null;
         }
-        return <Overlay {...typeaheadState} />;
-      };
+        return <Overlay {...this.state.typeaheadState} />;
+      }
 
-      render = () => (
-        <div style={styles.root}>
-          {this.renderTypeahead()}
-          <div style={styles.editor}>
-            <TypeaheadEditor
-              editorState={this.state.editorState}
-              onChange={this.onChange}
-              onTypeaheadChange={this.onTypeaheadChange}
-            />
+      render() {
+        return (
+          <div>
+            {this.renderTypeahead()}
+            <div style={styles.editor}>
+              <TypeaheadEditor
+                editorState={this.state.editorState}
+                onChange={this.onChange}
+                onTypeaheadChange={this.onTypeaheadChange}
+              />
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
 
     const styles = {
-      root: {
-        width: 600,
-        padding: 20,
-        fontFamily: 'Helvetica, sans-serif'
-      },
       editor: {
         minHeight: 80,
         padding: 10,
-        border: '1px solid #ccc'
+        border: '1px solid #ccc',
       },
       typeahead: {
         padding: 10,
         background: 'ivory',
         border: '1px solid #ccc',
-        borderRadius: 3
-      }
+        borderRadius: 3,
+      },
     };
 
     ReactDOM.render(
