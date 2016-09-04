@@ -4,6 +4,8 @@
 
 Typeaheads for Draft.js inspired by Facebook.com.
 
+![example](example.gif)
+
 [Check out an example of mentions in draft using draft-js-typeahead here. 🎉](http://dooly-ai.github.io/draft-js-typeahead/)
 
 This package provides a higher-order component that wraps draft's `Editor` component and augments it with typeahead superpowers. One popular use for draft-js-typeahead is to add support for mentions in draft editors.
@@ -25,7 +27,7 @@ $ npm install --save draft-js-typeahead
 
 ## Examples
 
-[Examples are available under the `/examples` directory.](/examples)
+[Examples are available under the `examples/` directory.](examples/)
 
 
 ## Usage
