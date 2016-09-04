@@ -57,7 +57,7 @@ This method is called when an item in the typeahead is selected (by hitting retu
 
 ## License
 
-MIT © [Justin Vaillancourt](justin@dooly.ai)
+MIT © [Justin Vaillancourt](mailto:justin@dooly.ai)
 
 
 [npm-image]: https://badge.fury.io/js/draft-js-typeahead.svg
