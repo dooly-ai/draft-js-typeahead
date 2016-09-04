@@ -52,7 +52,7 @@ This method is called when the typeahead's *visibility*, *position*, or *text* c
 
 This method is called when an item in the typeahead is selected (by hitting return). A typical callback autocompletes the editor with the selected item and tags it with a draft entity.
 
-*Note:* By default draft-js-typeahead does not filter items in the typeahead based on the entered text, [see the mentions example for one approach to filtering](/mentions).
+*Note:* By default draft-js-typeahead does not filter items in the typeahead based on the entered text, [see the mentions example for one approach to filtering](/examples/mentions).
 
 
 ## License
