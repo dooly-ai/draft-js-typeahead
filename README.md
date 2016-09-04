@@ -8,6 +8,8 @@ Typeaheads for Draft.js inspired by Facebook.com.
 
 This package provides a higher-order component that wraps draft's `Editor` component and augments it with typeahead superpowers. One popular use for draft-js-typeahead is to add support for mentions in draft editors.
 
+-
+
 draft-js-typeahead helps in three ways:
  - It figures out *if* and *where* the typeahead should be showing.
  - It keeps track of the typeahead's highlighted item.
@@ -34,7 +36,11 @@ First we'll need to import `TypeaheadEditor`:
 import { TypeaheadEditor } from 'draft-js-typeahead';
 ```
 
-`TypeaheadEditor` is a react component that wraps draft's `Editor`. It supports all of the same properties as the latter, as well as a few others:
+`TypeaheadEditor` is a react component that wraps draft's `Editor`.
+
+-
+
+It supports all of the same properties as the latter, as well as a few others:
 
 `onTypeaheadChange => (typeaheadState)`:
 
