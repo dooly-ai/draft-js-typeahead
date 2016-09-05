@@ -8,7 +8,7 @@ Typeaheads for Draft.js inspired by Facebook.com.
 
 [Check out an example of mentions in draft using draft-js-typeahead here. 🎉](http://dooly-ai.github.io/draft-js-typeahead/)
 
-This package provides a higher-order component that wraps draft's `Editor` component and augments it with typeahead superpowers. One popular use for draft-js-typeahead is to add support for mentions in draft editors.
+This package provides a higher-order component that wraps draft's `Editor` component and augments it with typeahead superpowers. One popular use for draft-js-typeahead is to add mentions in your editors.
 
 -
 
