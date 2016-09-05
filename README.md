@@ -2,7 +2,7 @@
 
 [![NPM version][npm-image]][npm-url]
 
-Typeaheads for Draft.js inspired by Facebook.com.
+Typeaheads for [Draft.js](https://github.com/facebook/draft-js) inspired by Facebook.com.
 
 ![example](example.gif)
 
