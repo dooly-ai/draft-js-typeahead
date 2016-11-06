@@ -1,8 +1,8 @@
 {
   "name": "draft-js-typeahead",
   "version": "0.1.0",
-  "description": "",
-  "homepage": "",
+  "description": "Typeaheads for Draft.js inspired by Facebook.com",
+  "homepage": "https://github.com/dooly-ai/draft-js-typeahead",
   "author": {
     "name": "Justin Vaillancourt",
     "email": "justin@dooly.ai",
@@ -13,7 +13,11 @@
   ],
   "main": "lib/index.js",
   "keywords": [
-    ""
+    "react",
+    "draft-js",
+    "mentions",
+    "typeahead",
+    "editor"
   ],
   "devDependencies": {
     "babel-core": "^6.7.4",
