@@ -17,7 +17,8 @@
     "url": ""
   },
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "main": "lib/index.js",
   "repository": "dooly-ai/draft-js-typeahead",
