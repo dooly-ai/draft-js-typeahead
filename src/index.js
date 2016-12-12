@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import { Editor, EditorState } from 'draft-js';
 
 function normalizeSelectedIndex(selectedIndex, max) {
