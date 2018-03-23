@@ -1,6 +1,6 @@
 {
-  "name": "draft-js-typeahead",
-  "version": "0.1.1",
+  "name": "@goco/draft-js-typeahead",
+  "version": "0.2.0",
   "description": "Typeaheads for Draft.js inspired by Facebook.com",
   "keywords": [
     "react",
@@ -9,7 +9,7 @@
     "typeahead",
     "editor"
   ],
-  "homepage": "https://github.com/dooly-ai/draft-js-typeahead",
+  "homepage": "https://github.com/goco-inc/draft-js-typeahead",
   "license": "MIT",
   "author": {
     "name": "Justin Vaillancourt",
